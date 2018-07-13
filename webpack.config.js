@@ -17,6 +17,10 @@ module.exports = {
         loader: 'babel-loader',
         options: { presets: ['env'] },
       },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
   resolve: { extensions: ['*', '.js', '.jsx'] },

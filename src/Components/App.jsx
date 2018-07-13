@@ -1,11 +1,9 @@
 import React from 'react';
+import CanvasContainer from '../Containers/CanvasContainer';
+import './style.css';
 
 const App = () => (
-  <div>
-    <h1>
-      Hello, World!
-    </h1>
-  </div>
+  <CanvasContainer />
 );
 
 export default App;
