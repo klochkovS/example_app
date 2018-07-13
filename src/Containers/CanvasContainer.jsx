@@ -2,12 +2,16 @@ import { connect } from 'react-redux';
 import Canvas from '../Components/Canvas/Canvas';
 import { addRect } from '../actions/actions';
 
+const mapStateToProps = state => ({
+  rectangles: state,
+});
+
 const mapDispatchToProps = dispatch => ({
-  addRect: dispatch(addRect()),
+  addRect: (x, y) => dispatch(addRect(x, y)),
 });
 
 const CanvasContainer = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(Canvas);
 

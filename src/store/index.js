@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger';
 import { rectangles } from '../reducers/reducers';
 
 const initialState = {
-  rectangles: [],
+
 };
 
 const logger = createLogger();

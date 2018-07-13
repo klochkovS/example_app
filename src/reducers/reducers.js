@@ -1,5 +1,7 @@
 import C from '../constants';
 
+
+
 export const rect = (state = {}, action) => {
   switch (action.type) {
     case C.ADD_RECT:
