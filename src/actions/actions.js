@@ -13,3 +13,12 @@ export const addRect = (x, y) => {
     y,
   });
 };
+
+export const changeCoord = (id, x, y) => (
+  {
+    type: C.CHANGE_COORD,
+    id,
+    x,
+    y,
+  }
+);
