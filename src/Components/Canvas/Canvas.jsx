@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { v4 } from 'uuid';
+import RectsContainer from '../../Containers/RectsContainer';
+import LinesContainer from '../../Containers/LinesContainer';
 import checkSpace from '../../lib/checkSpace';
+
 
 class Canvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentId: '',
+      currentLineId: '',
     };
+
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -28,75 +32,45 @@ class Canvas extends Component {
   }
 
   handleMouseDown(event) {
-    const currentId = event.target.getAttribute('data-key');
+    const { addLine, addLineStartPoint } = this.props;
+    const { clientX, clientY } = event;
+    const currentLineId = v4();
+    if (event.ctrlKey) {
+      addLine(currentLineId);
+      addLineStartPoint(currentLineId, clientX, clientY);
+    }
+    this.setState({
+      currentLineId,
+    });
+
     document.addEventListener('mousemove', this.handleMouseMove);
-    this.setState({ currentId });
   }
 
   handleMouseMove(event) {
-    const { currentId } = this.state;
-    const { rectangles, changeCoord } = this.props;
-    let { clientX, clientY } = event;
-    clientX -= 50;
-    clientY -= 25;
-    rectangles.forEach((val) => {
-      const { id, x, y } = val;
-      if (id !== currentId) {
-        const left = clientX > x - 100 && clientX < x;
-        const right = clientX < x + 100 && clientX > x;
-        const top = clientY > y - 50 && clientY < y;
-        const bottom = clientY < y + 50 && clientY > y;
-        const conLeft = x - 100;
-        const conTop = y - 50;
-        const conBottom = y + 50;
-        const conRight = x + 100;
-
-        if (left && (top || bottom)) {
-          if (clientY > y - 25 && clientY < y + 25) {
-            clientX = conLeft;
-          } else if (top) {
-            clientY = conTop;
-          } else {
-            clientY = conBottom;
-          }
-        }
-
-        if (right && (top || bottom)) {
-          if (clientY > y - 25 && clientY < y + 25) {
-            clientX = conRight;
-          } else if (top) {
-            clientY = conTop;
-          } else {
-            clientY = conBottom;
-          }
-        }
-      }
-    });
-    changeCoord(currentId, clientX, clientY);
+    const { currentLineId } = this.state;
+    const { addLineEndPoint } = this.props;
+    const { clientX, clientY } = event;
+    if (event.ctrlKey) {
+      addLineEndPoint(currentLineId, clientX, clientY);
+    }
   }
 
   handleMouseUp() {
     document.removeEventListener('mousemove', this.handleMouseMove);
-    this.setState({ currentId: '' });
+    this.setState({ currentLineId: '' });
   }
 
   render() {
-    const { rectangles } = this.props;
     return (
-      <svg onDoubleClick={this.handleDoubleClick} height="100%" width="100%">
-        {Array.isArray(rectangles) ? rectangles.map(rect => (
-          <rect
-            onMouseDown={this.handleMouseDown}
-            onMouseUp={this.handleMouseUp}
-            key={rect.id}
-            data-key={rect.id}
-            height="50"
-            width="100"
-            x={rect.x}
-            y={rect.y}
-            fill="yellowgreen"
-          />
-        )) : ''}
+      <svg
+        onDoubleClick={this.handleDoubleClick}
+        onMouseDown={this.handleMouseDown}
+        onMouseUp={this.handleMouseUp}
+        height="100%"
+        width="100%"
+      >
+        <LinesContainer />
+        <RectsContainer />
       </svg>
     );
   }
@@ -104,7 +78,6 @@ class Canvas extends Component {
 
 Canvas.propTypes = {
   addRect: PropTypes.func.isRequired,
-  changeCoord: PropTypes.func.isRequired,
   rectangles: PropTypes.array,
 };
 
