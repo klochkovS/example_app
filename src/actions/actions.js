@@ -41,12 +41,21 @@ export const addLine = id => (
   }
 );
 
+export const removeLine = id => (
+  {
+    type: C.REMOVE_LINE,
+    id,
+  }
+);
+
 export const addLineStartPoint = (id, x1, y1) => (
   {
     type: C.DRAW_LINE_START,
     id,
     x1,
     y1,
+    x2: x1,
+    y2: y1,
   }
 );
 

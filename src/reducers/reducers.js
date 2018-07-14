@@ -34,7 +34,8 @@ export const lines = (state = [], action) => {
         ...state,
         line({}, action),
       ];
-
+    case C.REMOVE_LINE:
+      return state.filter(l => l.id !== action.id);
     case C.DRAW_LINE_START:
       return state.map(l => line(l, action));
     case C.DRAW_LINE_END:
