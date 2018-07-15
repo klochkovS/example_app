@@ -48,22 +48,39 @@ export const removeLine = id => (
   }
 );
 
-export const addLineStartPoint = (id, x1, y1) => (
+export const addLineStartPoint = (id, rectId, x, y) => (
   {
     type: C.DRAW_LINE_START,
     id,
-    x1,
-    y1,
-    x2: x1,
-    y2: y1,
+    rectId,
+    x,
+    y,
   }
 );
 
-export const addLineEndPoint = (id, x2, y2) => (
+export const addLineEndPoint = (id, rectId, x, y) => (
   {
     type: C.DRAW_LINE_END,
     id,
-    x2,
-    y2,
+    rectId,
+    x,
+    y,
+  }
+);
+
+export const changeLineStart = (id, x, y) => (
+  {
+    type: C.CHANGE_LINE_START,
+    x,
+    y,
+  }
+);
+
+export const addConnection = (rectId, lineId, position) => (
+  {
+    type: C.ADD_CONNECTION,
+    rectId,
+    lineId,
+    position,
   }
 );

@@ -8,7 +8,7 @@ class RectList extends Component {
     super(props);
 
     this.state = {
-      currentId: '',
+      currentRectId: '',
       currentLineId: '',
     };
 
@@ -24,60 +24,61 @@ class RectList extends Component {
   }
 
   handleLineBreak(event) {
-    const { removeLine } = this.props;
+    event.preventDefault();
+    const currentRectId = event.target.getAttribute('data-key');
     const { currentLineId } = this.state;
+    const { addConnection } = this.props;
+    addConnection(currentRectId, currentLineId, 'end');
     if (event.target.nodeName !== 'rect') {
+      const { removeLine } = this.props;
       removeLine(currentLineId);
       document.removeEventListener('mousemove', this.handleLineMove);
     }
   }
 
   handleLineMove(event) {
+    event.preventDefault();
     const { clientX, clientY } = event;
-    const { currentLineId } = this.state;
+    const { currentRectId, currentLineId } = this.state;
     const { addLineEndPoint } = this.props;
-    addLineEndPoint(currentLineId, clientX, clientY);
+    addLineEndPoint(currentLineId, currentRectId, clientX, clientY);
   }
 
   handleMouseDown(event) {
     event.preventDefault();
-    if (event.ctrlKey) {
-      const currentLineId = v4();
-      const { addLine, addLineStartPoint } = this.props;
-      const { clientX, clientY } = event;
-      addLine(currentLineId);
-      addLineStartPoint(currentLineId, clientX, clientY);
-      console.log('YYYYYYY', currentLineId);
-      this.setState({ currentLineId });
-      document.addEventListener('mousemove', this.handleLineMove);
-    } else {
-      const currentId = event.target.getAttribute('data-key');
-      this.setState({ currentId });
+    const currentRectId = event.target.getAttribute('data-key');
+    if (!event.ctrlKey) {
+      this.setState({ currentRectId });
       document.addEventListener('mousemove', this.handleRectMove);
-    }
+    } else {
+      const { clientX, clientY } = event;
+      const { addLine, addConnection, addLineStartPoint } = this.props;
 
+      const currentLineId = v4();
+      addLine(currentLineId);
+      addLineStartPoint(currentLineId, currentRectId, clientX, clientY);
+      addConnection(currentRectId, currentLineId, 'start');
+      document.addEventListener('mousemove', this.handleLineMove);
+      this.setState({ currentLineId });
+    }
   }
 
   handleRectMove(event) {
     event.preventDefault();
-    const { currentId, currentLineId } = this.state;
-    const { rectangles, changeCoord, removeLine } = this.props;
+    const { currentRectId } = this.state;
+    const { rectangles, changeCoord } = this.props;
     let { clientX, clientY } = event;
     clientX -= 50;
     clientY -= 25;
 
-    if (event.ctrlKey) {
-    } else {
-      const coord = checkSpaceInDrag(rectangles, currentId, clientX, clientY);
-      changeCoord(currentId, coord.x, coord.y);
-    }
+    const coord = checkSpaceInDrag(rectangles, currentRectId, clientX, clientY);
+    changeCoord(currentRectId, coord.x, coord.y);
   }
 
-  handleMouseUp(event) {
-    //document.removeEventListener('mouseup', this.handleLineBreak);
-    event.stopPropagation();
+  handleMouseUp() {
     document.removeEventListener('mousemove', this.handleRectMove);
-    this.setState({ currentId: '', currentLineId: '' });
+    document.removeEventListener('mousemove', this.handleLineMove);
+    this.setState({ currentRectId: '', currentLineId: '' });
   }
 
   render() {

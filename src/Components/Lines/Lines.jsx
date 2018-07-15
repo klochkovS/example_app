@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Lines extends Component {
   render() {
@@ -8,15 +9,19 @@ class Lines extends Component {
         <line
           key={line.id}
           data-key={line.id}
-          x1={line.x1}
-          y1={line.y1}
-          x2={line.x2}
-          y2={line.y2}
+          x1={line.startPoint.x}
+          y1={line.startPoint.y}
+          x2={line.endPoint.x}
+          y2={line.endPoint.y}
           stroke="black"
         />
       )) : ''
     );
   }
 }
+
+Lines.propTypes = {
+  lines: PropTypes.array.isRequired,
+};
 
 export default Lines;
