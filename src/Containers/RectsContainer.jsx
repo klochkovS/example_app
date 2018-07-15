@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 import Rects from '../Components/Rects/Rects';
 import {
   changeCoord,
+  changeLineStart,
+  changeLineEnd,
   addConnection,
   addLine,
   removeLine,
@@ -16,6 +18,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   changeCoord: (id, x, y) => dispatch(changeCoord(id, x, y)),
+  changeLineStart: (id, x, y) => dispatch(changeLineStart(id, x, y)),
+  changeLineEnd: (id, x, y) => dispatch(changeLineEnd(id, x, y)),
   addConnection: (rectId, lineId, position) => dispatch(addConnection(rectId, lineId, position)),
   addLine: id => dispatch(addLine(id)),
   removeLine: id => dispatch(removeLine(id)),

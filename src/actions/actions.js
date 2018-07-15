@@ -71,6 +71,16 @@ export const addLineEndPoint = (id, rectId, x, y) => (
 export const changeLineStart = (id, x, y) => (
   {
     type: C.CHANGE_LINE_START,
+    id,
+    x,
+    y,
+  }
+);
+
+export const changeLineEnd = (id, x, y) => (
+  {
+    type: C.CHANGE_LINE_END,
+    id,
     x,
     y,
   }

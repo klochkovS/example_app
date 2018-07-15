@@ -25,11 +25,13 @@ class RectList extends Component {
 
   handleLineBreak(event) {
     event.preventDefault();
-    const currentRectId = event.target.getAttribute('data-key');
     const { currentLineId } = this.state;
-    const { addConnection } = this.props;
-    addConnection(currentRectId, currentLineId, 'end');
-    if (event.target.nodeName !== 'rect') {
+    if (event.ctrlKey) {
+      const currentRectId = event.target.getAttribute('data-key');
+      const { addConnection } = this.props;
+      addConnection(currentRectId, currentLineId, 'end');
+    }
+    if (event.target.nodeName !== 'rect' || !event.ctrlKey) {
       const { removeLine } = this.props;
       removeLine(currentLineId);
       document.removeEventListener('mousemove', this.handleLineMove);
@@ -48,34 +50,86 @@ class RectList extends Component {
     event.preventDefault();
     const currentRectId = event.target.getAttribute('data-key');
     if (!event.ctrlKey) {
-      this.setState({ currentRectId });
       document.addEventListener('mousemove', this.handleRectMove);
     } else {
       const { clientX, clientY } = event;
-      const { addLine, addConnection, addLineStartPoint } = this.props;
+      const { addLine, addLineStartPoint } = this.props;
 
       const currentLineId = v4();
       addLine(currentLineId);
       addLineStartPoint(currentLineId, currentRectId, clientX, clientY);
-      addConnection(currentRectId, currentLineId, 'start');
       document.addEventListener('mousemove', this.handleLineMove);
       this.setState({ currentLineId });
     }
+    this.setState({ currentRectId });
   }
 
   handleRectMove(event) {
     event.preventDefault();
     const { currentRectId } = this.state;
-    const { rectangles, changeCoord } = this.props;
+    const { rectangles, changeCoord, changeLineStart, changeLineEnd } = this.props;
     let { clientX, clientY } = event;
     clientX -= 50;
     clientY -= 25;
 
-    const coord = checkSpaceInDrag(rectangles, currentRectId, clientX, clientY);
+
+    const coord = checkSpaceInDrag(
+      rectangles,
+      currentRectId,
+      clientX,
+      clientY,
+    );
     changeCoord(currentRectId, coord.x, coord.y);
+
+    const thatRect = rectangles.find(rect => rect.id === currentRectId);
+    if (thatRect.connections.length > 0) {
+      thatRect.connections.forEach((connection) => {
+        switch (connection.position) {
+          case 'start': {
+            changeLineStart(connection.lineId, coord.x + 50, coord.y + 25);
+            break;
+          }
+          case 'end': {
+            changeLineEnd(connection.lineId, coord.x + 50, coord.y + 25);
+            break;
+          }
+          default:
+            return console.log('Error...Connections not found');
+        }
+      });
+    }
+
+    // rectangles.forEach((rect) => {
+
+
+    //   if (rect.connections.length > 0) {
+    //     rect.connections.forEach((connection) => {
+    //       switch (connection.position) {
+    //         case 'start': {
+    //           changeLineStart(connection.lineId, coord.x, coord.y);
+    //           break;
+    //         }
+    //         case 'end': {
+    //           changeLineEnd(connection.lineId, coord.x, coord.y);
+    //           break;
+    //         }
+    //         default:
+    //           return console.log('Error...Connections not found');
+    //       }
+    //     });
+    //   }
+
+
+    // });
   }
 
-  handleMouseUp() {
+  handleMouseUp(event) {
+    if (event.ctrlKey) {
+      const { currentRectId, currentLineId } = this.state;
+      const { addConnection } = this.props;
+      console.log(currentRectId, currentLineId);
+      addConnection(currentRectId, currentLineId, 'start');
+    }
     document.removeEventListener('mousemove', this.handleRectMove);
     document.removeEventListener('mousemove', this.handleLineMove);
     this.setState({ currentRectId: '', currentLineId: '' });
@@ -108,6 +162,7 @@ RectList.propTypes = {
   removeLine: PropTypes.func.isRequired,
   addLineStartPoint: PropTypes.func.isRequired,
   addLineEndPoint: PropTypes.func.isRequired,
+  addConnection: PropTypes.func.isRequired,
 };
 
 export default RectList;

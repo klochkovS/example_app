@@ -41,6 +41,16 @@ export const line = (state = {}, action) => {
             y: action.y,
           },
         };
+    case C.CHANGE_LINE_END:
+      return (state.id !== action.id)
+        ? state
+        : {
+          ...state,
+          endPoint: {
+            x: action.x,
+            y: action.y,
+          },
+        };
     default:
       return state;
   }
@@ -60,6 +70,8 @@ export const lines = (state = [], action) => {
     case C.DRAW_LINE_END:
       return state.map(l => line(l, action));
     case C.CHANGE_LINE_START:
+      return state.map(l => line(l, action));
+    case C.CHANGE_LINE_END:
       return state.map(l => line(l, action));
     default:
       return state;
