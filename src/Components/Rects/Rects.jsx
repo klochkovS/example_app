@@ -86,9 +86,10 @@ class RectList extends Component {
     );
     changeCoord(currentRectId, coord.x, coord.y);
 
-    const thisRect = rectangles.find(rect => rect.id === currentRectId);
-    if (thisRect.connections.length > 0) {
-      thisRect.connections.forEach((connection) => {
+
+    const thisRect = rectangles.filter(rect => rect.id === currentRectId);
+    if (thisRect[0].connections.length > 0) {
+      thisRect[0].connections.forEach((connection) => {
         console.log(connection.position);
         switch (connection.position) {
           case 'start': {
