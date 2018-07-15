@@ -1,4 +1,4 @@
-import C from '../constants';
+import C from '../reducers_constants';
 
 export const line = (state = {}, action) => {
   switch (action.type) {
@@ -109,6 +109,13 @@ export const rect = (state = {}, action) => {
             },
           ],
         };
+    case C.REMOVE_CONNECTION:
+      return (state.id !== action.rectId)
+        ? state
+        : {
+          ...state,
+          connections: state.connections.filter(c => c.lineId !== action.lineId),
+        };
     default:
       return state;
   }
@@ -125,8 +132,9 @@ export const rectangles = (state = [], action) => {
       return state.map(r => rect(r, action));
     case C.ADD_CONNECTION:
       return state.map(r => rect(r, action));
+    case C.REMOVE_CONNECTION:
+      return state.map(r => rect(r, action));
     default:
       return state;
   }
 };
-

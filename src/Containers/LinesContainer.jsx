@@ -1,20 +1,23 @@
 import { connect } from 'react-redux';
 import Lines from '../Components/Lines/Lines';
 import {
-  changeCoord,
+  removeLine,
+  removeConnection,
 } from '../actions/actions';
 
 const mapStateToProps = state => ({
   lines: state.lines,
+  rectangles: state.rectangles,
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   changeCoord: (id, x, y) => dispatch(changeCoord(id, x, y)),
-// });
+const mapDispatchToProps = dispatch => ({
+  removeLine: id => dispatch(removeLine(id)),
+  removeConnection: (rectId, lineId) => dispatch(removeConnection(rectId, lineId)),
+});
 
 const RectsContainer = connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(Lines);
 
 export default RectsContainer;

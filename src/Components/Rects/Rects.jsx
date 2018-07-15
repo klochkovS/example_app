@@ -49,29 +49,34 @@ class RectList extends Component {
   handleMouseDown(event) {
     event.preventDefault();
     const currentRectId = event.target.getAttribute('data-key');
+    const { clientX, clientY } = event;
     if (!event.ctrlKey) {
       document.addEventListener('mousemove', this.handleRectMove);
     } else {
-      const { clientX, clientY } = event;
       const { addLine, addLineStartPoint } = this.props;
-
       const currentLineId = v4();
       addLine(currentLineId);
       addLineStartPoint(currentLineId, currentRectId, clientX, clientY);
       document.addEventListener('mousemove', this.handleLineMove);
       this.setState({ currentLineId });
     }
-    this.setState({ currentRectId });
+    this.setState({
+      currentRectId,
+    });
   }
 
   handleRectMove(event) {
     event.preventDefault();
     const { currentRectId } = this.state;
-    const { rectangles, changeCoord, changeLineStart, changeLineEnd } = this.props;
+    const {
+      rectangles,
+      changeCoord,
+      changeLineStart,
+      changeLineEnd,
+    } = this.props;
     let { clientX, clientY } = event;
     clientX -= 50;
     clientY -= 25;
-
 
     const coord = checkSpaceInDrag(
       rectangles,
@@ -81,9 +86,10 @@ class RectList extends Component {
     );
     changeCoord(currentRectId, coord.x, coord.y);
 
-    const thatRect = rectangles.find(rect => rect.id === currentRectId);
-    if (thatRect.connections.length > 0) {
-      thatRect.connections.forEach((connection) => {
+    const thisRect = rectangles.find(rect => rect.id === currentRectId);
+    if (thisRect.connections.length > 0) {
+      thisRect.connections.forEach((connection) => {
+        console.log(connection.position);
         switch (connection.position) {
           case 'start': {
             changeLineStart(connection.lineId, coord.x + 50, coord.y + 25);
@@ -98,29 +104,6 @@ class RectList extends Component {
         }
       });
     }
-
-    // rectangles.forEach((rect) => {
-
-
-    //   if (rect.connections.length > 0) {
-    //     rect.connections.forEach((connection) => {
-    //       switch (connection.position) {
-    //         case 'start': {
-    //           changeLineStart(connection.lineId, coord.x, coord.y);
-    //           break;
-    //         }
-    //         case 'end': {
-    //           changeLineEnd(connection.lineId, coord.x, coord.y);
-    //           break;
-    //         }
-    //         default:
-    //           return console.log('Error...Connections not found');
-    //       }
-    //     });
-    //   }
-
-
-    // });
   }
 
   handleMouseUp(event) {
@@ -130,6 +113,7 @@ class RectList extends Component {
       console.log(currentRectId, currentLineId);
       addConnection(currentRectId, currentLineId, 'start');
     }
+
     document.removeEventListener('mousemove', this.handleRectMove);
     document.removeEventListener('mousemove', this.handleLineMove);
     this.setState({ currentRectId: '', currentLineId: '' });
@@ -157,6 +141,8 @@ class RectList extends Component {
 
 RectList.propTypes = {
   changeCoord: PropTypes.func.isRequired,
+  changeLineStart: PropTypes.func.isRequired,
+  changeLineEnd: PropTypes.func.isRequired,
   rectangles: PropTypes.array.isRequired,
   addLine: PropTypes.func.isRequired,
   removeLine: PropTypes.func.isRequired,

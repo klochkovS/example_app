@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import C from '../constants';
+import C from '../reducers_constants';
 
 const colors = [
   'yellowgreen',
@@ -92,5 +92,13 @@ export const addConnection = (rectId, lineId, position) => (
     rectId,
     lineId,
     position,
+  }
+);
+
+export const removeConnection = (rectId, lineId) => (
+  {
+    type: C.REMOVE_CONNECTION,
+    rectId,
+    lineId,
   }
 );
