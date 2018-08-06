@@ -114,7 +114,8 @@ export const rect = (state = {}, action) => {
         ? state
         : {
           ...state,
-          connections: state.connections.filter(c => c.lineId !== action.lineId),
+          connections: state.connections
+            .filter(c => c.lineId !== action.lineId),
         };
     default:
       return state;

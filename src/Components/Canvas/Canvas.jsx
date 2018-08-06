@@ -20,7 +20,7 @@ class Canvas extends Component {
     if (checkSpace(rectangles, clientX, clientY)) {
       addRect(clientX, clientY);
     } else {
-      alert('Не поместится');
+      alert('Didn\'t fit!');
     }
   }
 
@@ -40,7 +40,7 @@ class Canvas extends Component {
 
 Canvas.propTypes = {
   addRect: PropTypes.func.isRequired,
-  rectangles: PropTypes.array,
+  rectangles: PropTypes.array.isRequired,
 };
 
 export default Canvas;

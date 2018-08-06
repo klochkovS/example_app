@@ -12,7 +12,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   removeLine: id => dispatch(removeLine(id)),
-  removeConnection: (rectId, lineId) => dispatch(removeConnection(rectId, lineId)),
+  removeConnection: (
+    rectId,
+    lineId,
+  ) => dispatch(removeConnection(rectId, lineId)),
 });
 
 const RectsContainer = connect(

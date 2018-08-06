@@ -26,6 +26,7 @@ class RectList extends Component {
   handleLineBreak(event) {
     event.preventDefault();
     const { currentLineId } = this.state;
+    // Line have been broken over second rect
     if (event.ctrlKey) {
       const currentRectId = event.target.getAttribute('data-key');
       const { addConnection } = this.props;
@@ -50,6 +51,7 @@ class RectList extends Component {
     event.preventDefault();
     const currentRectId = event.target.getAttribute('data-key');
     const { clientX, clientY } = event;
+
     if (!event.ctrlKey) {
       document.addEventListener('mousemove', this.handleRectMove);
     } else {
